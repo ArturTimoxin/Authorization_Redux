@@ -1,4 +1,4 @@
-import { SET_TITLE_AUTH } from "../actions/PageActions";
+import { SET_TITLE_AUTH } from "../actions/AuthActions";
 
 const initialState = {
   titleAuth: "Authorization",
