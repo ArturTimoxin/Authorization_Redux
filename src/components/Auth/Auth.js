@@ -1,43 +1,52 @@
 import React from "react";
-import PropTypes from "prop-types";
+const emailPattern = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
 
 class Auth extends React.Component {
+  state = {
+    email: "",
+    password: "",
+  };
+
   log = e => {
     e.preventDefault();
-    const titleAuth = "Successful Authorization";
-    this.props.setTitleAuth(titleAuth);
+    if (this.state.email && this.state.password) {
+      if (emailPattern.test(this.state.email)) {
+        let userAuthData = {
+          email: this.state.email,
+          password: this.state.password,
+        };
+        this.props.login(userAuthData);
+      } else {
+        this.props.setError("Enter a valid email");
+      }
+    } else {
+      this.props.setError("Enter email and password");
+    }
+  };
+
+  changeInput = e => {
+    this.setState({ [e.target.name]: e.target.value });
   };
 
   render() {
-    const { titleAuth, btnAuth } = this.props;
     return (
       <div className="auth">
-        <h1 className="title">{titleAuth}</h1>
-        <p className="userData">
-          Your name: <br />
-          Your lastname: <br />
-          Yout login: <br />
-          Email: <br />
-          Your age:
-        </p>
-        <form>
-          <input type="text" name="email" id="email" placeholder="E-mail" />
+        <h1 className="title">Authorization</h1>
+        <form onSubmit={this.log}>
+          <input type="type" name="email" id="email" placeholder="E-mail" onChange={this.changeInput} />
           <br />
-          <input type="password" name="password" id="password" placeholder="Password" />
+          <input type="password" name="password" id="password" placeholder="Password" onChange={this.changeInput} />
           <br />
-          <button type="submit" id="log" onClick={this.log}>
-            {btnAuth}
+          <p id="error" style={{ color: "red" }}>
+            {this.props.error}
+          </p>
+          <button type="submit" id="login">
+            Log in
           </button>
         </form>
       </div>
     );
   }
 }
-
-Auth.propTypes = {
-  titleAuth: PropTypes.string.isRequired,
-  btnAuth: PropTypes.string.isRequired,
-  setTitleAuth: PropTypes.func.isRequired,
-};
 
 export default Auth;

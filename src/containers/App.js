@@ -1,31 +1,46 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import Auth from "../components/Auth/Auth";
-import { setTitleAuth } from "../actions/AuthActions";
+import Home from "../components/Home/Home";
+import { setUserData, login, logout, setError } from "../actions/AuthActions";
 
 import "../style/style.css";
 
 class App extends Component {
+  componentWillMount() {
+    let user = JSON.parse(localStorage.getItem("user_data"));
+    if (user) {
+      this.props.setUserAction(user);
+    }
+  }
+
   render() {
-    const { auth, setTitleAuthAction } = this.props;
+    const { user, error, loginAction, logoutAction, setErrorAction } = this.props;
     return (
       <div className="App">
-        <Auth titleAuth={auth.titleAuth} btnAuth={auth.btnAuth} setTitleAuth={setTitleAuthAction} />
+        {Object.keys(user).length !== 0 ? (
+          <Home user={user} logout={logoutAction} />
+        ) : (
+          <Auth login={loginAction} error={error} setError={setErrorAction} />
+        )}
       </div>
     );
   }
 }
 
 const mapStateToProps = store => {
-  console.log(store);
   return {
-    auth: store.auth,
+    user: store.auth.user,
+    error: store.auth.error,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    setTitleAuthAction: titleAuth => dispatch(setTitleAuth(titleAuth)),
+    setUserDataAction: user => dispatch(setUserData(user)),
+    setErrorAction: message => dispatch(setError(message)),
+    loginAction: userData => dispatch(login(userData)),
+    logoutAction: () => dispatch(logout()),
   };
 };
 
