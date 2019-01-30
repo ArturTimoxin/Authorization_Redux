@@ -1,7 +1,8 @@
 import API from "../services/api";
-
+import { history } from "../store/configureStore";
 export const SET_USER_DATA = "SET_USER_DATA";
 export const SET_ERROR = "SET_ERROR";
+export const LOGOUT = "LOGOUT";
 
 export function setUserData(user) {
   return {
@@ -26,6 +27,7 @@ export function login(authData) {
           localStorage.setItem("user_data", JSON.stringify(res.user));
           dispatch(setUserData(res.user));
           dispatch(setError(""));
+          history.push("/");
         },
         rej => {
           console.log(rej.message);
@@ -42,6 +44,8 @@ export function login(authData) {
 export function logout() {
   return dispatch => {
     localStorage.clear();
-    dispatch(setUserData({}));
+    dispatch({
+      type: LOGOUT,
+    });
   };
 }

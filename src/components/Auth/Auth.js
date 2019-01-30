@@ -1,7 +1,9 @@
-import React from "react";
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { login } from "../../actions/AuthActions";
 const emailPattern = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
 
-class Auth extends React.Component {
+class Auth extends Component {
   state = {
     email: "",
     password: "",
@@ -15,7 +17,7 @@ class Auth extends React.Component {
           email: this.state.email,
           password: this.state.password,
         };
-        this.props.login(userAuthData);
+        this.props.loginAction(userAuthData);
       } else {
         this.props.setError("Enter a valid email");
       }
@@ -49,4 +51,8 @@ class Auth extends React.Component {
   }
 }
 
-export default Auth;
+const mapDispatchToProps = dispatch => {
+  return { loginAction: userData => dispatch(login(userData)) };
+};
+
+export default connect(mapDispatchToProps)(Auth);
