@@ -2,10 +2,6 @@ import API from "../services/api";
 
 export const SET_USER_DATA = "SET_USER_DATA";
 export const SET_ERROR = "SET_ERROR";
-export const LOGIN_REQUEST = "LOGIN_REQUEST";
-export const LOGIN_FAIL = "LOGIN_FAIL";
-export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
-export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
 
 export function setUserData(user) {
   return {
@@ -23,10 +19,6 @@ export function setError(message) {
 
 export function login(authData) {
   return dispatch => {
-    dispatch({
-      type: LOGIN_REQUEST,
-    });
-
     API("POST", "token/", authData)
       .then(
         res => {
@@ -53,16 +45,3 @@ export function logout() {
     dispatch(setUserData({}));
   };
 }
-
-// export function login(payload) {
-//   // TODO
-//   return {
-//     type: LOGIN_REQUEST,
-//   };
-// }
-
-// export function logout() {
-//   return {
-//     type: LOGOUT_SUCCESS,
-//   };
-// }

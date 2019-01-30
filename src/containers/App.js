@@ -10,7 +10,7 @@ class App extends Component {
   componentWillMount() {
     let user = JSON.parse(localStorage.getItem("user_data"));
     if (user) {
-      this.props.setUserAction(user);
+      this.props.setUserDataAction(user);
     }
   }
 
