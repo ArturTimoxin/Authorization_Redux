@@ -12,6 +12,7 @@ const API = (method, url, body) => {
   };
 
   return fetch(`http://std.powercode.pro:5000/api/v1/${url}`, options).then(res => {
+    console.log("json");
     return res.json();
   });
 };

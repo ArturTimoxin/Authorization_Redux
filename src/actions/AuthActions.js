@@ -3,6 +3,7 @@ import { history } from "../store/configureStore";
 export const SET_USER_DATA = "SET_USER_DATA";
 export const SET_ERROR = "SET_ERROR";
 export const LOGOUT = "LOGOUT";
+export const LOGIN_REQUEST = "LOGIN_REQUEST";
 
 export function setUserData(user) {
   return {
@@ -20,6 +21,9 @@ export function setError(message) {
 
 export function login(authData) {
   return dispatch => {
+    dispatch({
+      type: LOGIN_REQUEST,
+    });
     API("POST", "token/", authData)
       .then(
         res => {
