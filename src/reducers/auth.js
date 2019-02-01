@@ -1,4 +1,4 @@
-import { SET_USER_DATA, SET_ERROR, LOGOUT, LOGIN_REQUEST } from "../actions/AuthActions";
+import { SET_USER_DATA, SET_ERROR, LOGOUT, TOGGLE_LOADING } from "../actions/AuthActions";
 
 const initialState = {
   user: localStorage.getItem("user_data") ? JSON.parse(localStorage.getItem("user_data")) : {},
@@ -15,8 +15,8 @@ export function authReducer(state = initialState, action) {
     case SET_ERROR: {
       return { ...state, error: action.payload };
     }
-    case LOGIN_REQUEST: {
-      return { ...state, loading: true };
+    case TOGGLE_LOADING: {
+      return { ...state, loading: !state.loading };
     }
     case LOGOUT: {
       return {
@@ -25,7 +25,6 @@ export function authReducer(state = initialState, action) {
         isAuthorized: false,
       };
     }
-
     default:
       return state;
   }

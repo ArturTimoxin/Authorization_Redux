@@ -3,7 +3,7 @@ import { history } from "../store/configureStore";
 export const SET_USER_DATA = "SET_USER_DATA";
 export const SET_ERROR = "SET_ERROR";
 export const LOGOUT = "LOGOUT";
-export const LOGIN_REQUEST = "LOGIN_REQUEST";
+export const TOGGLE_LOADING = "TOGGLE_LOADING";
 
 export function setUserData(user) {
   return {
@@ -22,7 +22,7 @@ export function setError(message) {
 export function login(authData) {
   return dispatch => {
     dispatch({
-      type: LOGIN_REQUEST,
+      type: TOGGLE_LOADING,
     });
     API("POST", "token/", authData)
       .then(
@@ -34,12 +34,12 @@ export function login(authData) {
           history.push("/");
         },
         rej => {
-          console.log(rej.message);
+          dispatch({ type: TOGGLE_LOADING });
           dispatch(setError("Don't connect with server"));
         },
       )
       .catch(error => {
-        console.log(error.message);
+        dispatch({ type: TOGGLE_LOADING });
         dispatch(setError("Invalid email or password"));
       });
   };
