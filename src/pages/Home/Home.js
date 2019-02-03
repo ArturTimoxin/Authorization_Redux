@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { history } from "../../store/configureStore";
-import { logout } from "../../actions/AuthActions";
+import { logout, getAuthorizedUserData } from "../../actions/AuthActions";
 import { Image, Menu } from "semantic-ui-react";
 function CheckAuthorize({ ...props }) {
   return props.isAuthorized ? (
@@ -36,6 +36,12 @@ function CheckAuthorize({ ...props }) {
 }
 
 class Home extends Component {
+  componentDidMount() {
+    if (this.props.isAuthorized) {
+      this.props.getAuthorizedUserDaraAction(localStorage.getItem("user_id"));
+    }
+  }
+
   render() {
     return (
       <div className="home">
@@ -57,7 +63,10 @@ const mapStateToProps = store => {
 };
 
 const mapDispatchToProps = dispatch => {
-  return { logoutAction: () => dispatch(logout()) };
+  return {
+    logoutAction: () => dispatch(logout()),
+    getAuthorizedUserDaraAction: id => dispatch(getAuthorizedUserData(id)),
+  };
 };
 
 export default connect(

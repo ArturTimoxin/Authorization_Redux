@@ -1,46 +1,50 @@
 import API from "../services/api";
 import { history } from "../store/configureStore";
-export const SET_USER_DATA = "SET_USER_DATA";
-export const SET_ERROR = "SET_ERROR";
-export const LOGOUT = "LOGOUT";
-export const TOGGLE_LOADING = "TOGGLE_LOADING";
+import { LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_ERROR, LOGOUT } from "../constants/constants";
 
-export function setUserData(user) {
-  return {
-    type: SET_USER_DATA,
-    payload: user,
-  };
-}
-
-export function setError(message) {
-  return {
-    type: SET_ERROR,
-    payload: message,
-  };
+export function getAuthorizedUserData(id) {
+  return dispatch =>
+    API("GET", `user/${id}`)
+      .then(res => {
+        res.json().then(res => {
+          dispatch({
+            type: LOGIN_SUCCESS,
+            payload: res.user,
+          });
+        });
+      })
+      .catch(error => {
+        console.log(error.message);
+      });
 }
 
 export function login(authData) {
   return dispatch => {
     dispatch({
-      type: TOGGLE_LOADING,
+      type: LOGIN_REQUEST,
     });
     API("POST", "token/", authData)
-      .then(
-        res => {
-          localStorage.setItem("user_hash", res.token.hash);
-          localStorage.setItem("user_data", JSON.stringify(res.user));
-          dispatch(setUserData(res.user));
-          dispatch(setError(""));
-          history.push("/");
-        },
-        rej => {
-          dispatch({ type: TOGGLE_LOADING });
-          dispatch(setError("Don't connect with server"));
-        },
-      )
+      .then(res => {
+        switch (res.status) {
+          case 401: {
+            dispatch({ type: LOGIN_ERROR, payload: "Invalid login or password" });
+            break;
+          }
+          default: {
+            res.json().then(res => {
+              localStorage.setItem("user_hash", res.token.hash);
+              localStorage.setItem("user_id", res.user.id);
+              dispatch({
+                type: LOGIN_SUCCESS,
+                payload: res.user,
+              });
+              history.push("/");
+            });
+          }
+        }
+      })
       .catch(error => {
-        dispatch({ type: TOGGLE_LOADING });
-        dispatch(setError("Invalid email or password"));
+        console.log(error.message);
       });
   };
 }
